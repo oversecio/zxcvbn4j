@@ -9,20 +9,24 @@ public class Matching {
 
     private static Map<String, Map<String, Integer>> BASE_RANKED_DICTIONARIES;
 
-    private static synchronized  Map<String, Map<String, Integer>> getBaseRankedDictionaries() {
-        if (BASE_RANKED_DICTIONARIES==null) {
-            BASE_RANKED_DICTIONARIES =  new HashMap<>();
-            for (Map.Entry<String, String[]> frequencyListRef : Dictionary.getFrequencyLists().entrySet()) {
-                String name = frequencyListRef.getKey();
-                String[] ls = frequencyListRef.getValue();
-                BASE_RANKED_DICTIONARIES.put(name, buildRankedDict(ls));
+    private static  Map<String, Map<String, Integer>> getBaseRankedDictionaries() {
+        synchronized (Zxcvbn.class) {
+            if (BASE_RANKED_DICTIONARIES == null) {
+                BASE_RANKED_DICTIONARIES = new HashMap<>();
+                for (Map.Entry<String, String[]> frequencyListRef : Dictionary.getFrequencyLists().entrySet()) {
+                    String name = frequencyListRef.getKey();
+                    String[] ls = frequencyListRef.getValue();
+                    BASE_RANKED_DICTIONARIES.put(name, buildRankedDict(ls));
+                }
             }
+            return BASE_RANKED_DICTIONARIES;
         }
-        return BASE_RANKED_DICTIONARIES;
     }
 
-    public static synchronized void unloadDictionaries() {
-        BASE_RANKED_DICTIONARIES = null;
+    public static void unloadDictionaries() {
+        synchronized (Zxcvbn.class) {
+            BASE_RANKED_DICTIONARIES = null;
+        }
     }
 
     private final Map<String, Map<String, Integer>> rankedDictionaries;

@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import com.nulabinc.zxcvbn.Zxcvbn;
 
 public class Dictionary {
 
@@ -33,23 +31,27 @@ public class Dictionary {
 
     private static Map<String, String[]> FREQUENCY_LISTS;
 
-    public static synchronized Map<String, String[]> getFrequencyLists() {
-        if (FREQUENCY_LISTS==null) {
-            FREQUENCY_LISTS = read();
+    public static Map<String, String[]> getFrequencyLists() {
+        synchronized (Zxcvbn.class) {
+            if (FREQUENCY_LISTS == null) {
+                FREQUENCY_LISTS = read();
+            }
+            return FREQUENCY_LISTS;
         }
-        return FREQUENCY_LISTS;
     }
 
-    public static synchronized void unloadFrequencyLists() {
-        FREQUENCY_LISTS = null;
+    public static void unloadFrequencyLists() {
+        synchronized (Zxcvbn.class) {
+            FREQUENCY_LISTS = null;
+        }
     }
 
     private static Map<String, String[]> read() {
         Map<String, String[]> freqLists = new HashMap<>();
-        for (String filename:  DICTIONARY_PARAMS) {
+        for (String filename : DICTIONARY_PARAMS) {
             List<String> words = new ArrayList<>();
-            try(InputStream is = Dictionary.class.getResourceAsStream(buildResourcePath(filename));
-                BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));) {
+            try (InputStream is = Dictionary.class.getResourceAsStream(buildResourcePath(filename));
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     words.add(line);

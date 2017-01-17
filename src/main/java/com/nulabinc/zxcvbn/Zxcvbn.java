@@ -9,9 +9,11 @@ import java.util.List;
 
 public class Zxcvbn {
 
-    public static synchronized void unloadDictionaryData() {
-        Dictionary.unloadFrequencyLists();
-        Matching.unloadDictionaries();
+    public static void unloadDictionaryData() {
+        synchronized (Zxcvbn.class) {
+            Dictionary.unloadFrequencyLists();
+            Matching.unloadDictionaries();
+        }
     }
 
     public Zxcvbn() {
