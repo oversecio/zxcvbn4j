@@ -23,7 +23,7 @@ public class Matching {
         }
     }
 
-    public static void unloadDictionaries() {
+    public static void unload() {
         synchronized (Zxcvbn.class) {
             BASE_RANKED_DICTIONARIES = null;
         }

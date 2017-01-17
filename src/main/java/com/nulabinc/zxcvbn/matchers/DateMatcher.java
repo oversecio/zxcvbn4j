@@ -1,6 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import com.nulabinc.zxcvbn.Scoring;
+import com.nulabinc.zxcvbn.Zxcvbn;
 
 import java.util.*;
 import java.util.regex.*;
@@ -9,13 +10,27 @@ public class DateMatcher extends BaseMatcher {
 
     private static final int DATE_MAX_YEAR = 2050;
     private static final int DATE_MIN_YEAR = 1000;
-    private static final Map<Integer, ArrayList<Integer[]>> DATE_SPLITS = new HashMap<>();
-    static {
-        DATE_SPLITS.put(4, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 2}); add(new Integer[]{2, 3}); }});
-        DATE_SPLITS.put(5, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 3}); add(new Integer[]{2, 3}); }});
-        DATE_SPLITS.put(6, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 2}); add(new Integer[]{2, 4}); add(new Integer[]{4, 5});}});
-        DATE_SPLITS.put(7, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 3}); add(new Integer[]{2, 3}); add(new Integer[]{4, 5}); add(new Integer[]{4, 6});}});
-        DATE_SPLITS.put(8, new ArrayList<Integer[]>(){{ add(new Integer[]{2, 4}); add(new Integer[]{4, 6}); }});
+    private static Map<Integer, ArrayList<Integer[]>> DATE_SPLITS;
+
+    private static Map<Integer, ArrayList<Integer[]>> getDateSplits() {
+        synchronized (Zxcvbn.class) {
+            if (DATE_SPLITS==null) {
+                DATE_SPLITS = new HashMap<>();
+
+                DATE_SPLITS.put(4, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 2}); add(new Integer[]{2, 3}); }});
+                DATE_SPLITS.put(5, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 3}); add(new Integer[]{2, 3}); }});
+                DATE_SPLITS.put(6, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 2}); add(new Integer[]{2, 4}); add(new Integer[]{4, 5});}});
+                DATE_SPLITS.put(7, new ArrayList<Integer[]>(){{ add(new Integer[]{1, 3}); add(new Integer[]{2, 3}); add(new Integer[]{4, 5}); add(new Integer[]{4, 6});}});
+                DATE_SPLITS.put(8, new ArrayList<Integer[]>(){{ add(new Integer[]{2, 4}); add(new Integer[]{4, 6}); }});
+            }
+            return DATE_SPLITS;
+        }
+    }
+
+    public static void unload() {
+        synchronized (Zxcvbn.class) {
+            DATE_SPLITS = null;
+        }
     }
 
     private final Pattern maybe_date_no_separator = Pattern.compile("^\\d{4,8}$");
@@ -32,7 +47,7 @@ public class DateMatcher extends BaseMatcher {
                     continue;
                 }
                 List<Dmy> candidates = new ArrayList<>();
-                for(Integer[] date: DATE_SPLITS.get(token.length())) {
+                for(Integer[] date: getDateSplits().get(token.length())) {
                     int k = date[0];
                     int l = date[1];
                     List<Integer> ints = new ArrayList<>();

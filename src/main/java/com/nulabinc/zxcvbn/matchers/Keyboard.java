@@ -10,25 +10,32 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.nulabinc.zxcvbn.Zxcvbn;
 
 public class Keyboard {
 
-    public static final Keyboard QWERTY =
-            new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/qwerty.txt")));
+    private static List<Keyboard> ALL_KEYBOARDS;
 
-    public static final Keyboard DVORAK =
-            new Keyboard("dvorak", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/dvorak.txt")));
+    public static List<Keyboard> getAllKeyboards() {
+        synchronized (Zxcvbn.class) {
+            if (ALL_KEYBOARDS==null) {
+                ALL_KEYBOARDS= Arrays.asList(
+                        new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/qwerty.txt"))),
+                        new Keyboard("dvorak", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/dvorak.txt"))),
+                        new Keyboard("jis", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/jis.txt"))),
+                        new Keyboard("keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/keypad.txt"))),
+                        new Keyboard("mac_keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/mac_keypad.txt")))
+                );
+            }
+            return ALL_KEYBOARDS;
+        }
+    }
 
-    public static final Keyboard JIS =
-            new Keyboard("jis", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/jis.txt")));
-
-    public static final Keyboard KEYPAD =
-            new Keyboard("keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/keypad.txt")));
-
-    public static final Keyboard MAC_KEYPAD =
-            new Keyboard("mac_keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/mac_keypad.txt")));
-
-    public static final List<Keyboard> ALL_KEYBOARDS = Arrays.asList(QWERTY, DVORAK, JIS, KEYPAD, MAC_KEYPAD);
+    public static void unload() {
+        synchronized (Zxcvbn.class) {
+            ALL_KEYBOARDS = null;
+        }
+    }
 
     private final String name;
 

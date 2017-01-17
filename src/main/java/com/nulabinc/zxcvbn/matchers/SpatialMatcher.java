@@ -17,7 +17,7 @@ public class SpatialMatcher extends BaseMatcher {
     }
 
     public SpatialMatcher() {
-        this(Keyboard.ALL_KEYBOARDS);
+        this(Keyboard.getAllKeyboards());
     }
 
     @Override

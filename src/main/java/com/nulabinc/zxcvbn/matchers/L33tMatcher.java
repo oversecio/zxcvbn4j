@@ -1,6 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import java.util.*;
+import com.nulabinc.zxcvbn.Zxcvbn;
 
 public class L33tMatcher extends BaseMatcher {
 
@@ -15,24 +16,38 @@ public class L33tMatcher extends BaseMatcher {
         this.rankedDictionaries = rankedDictionaries;
     }
 
-    private static final Map<Character, Character[]> L33T_TABLE = new HashMap<>();
-    static {
-        L33T_TABLE.put('a', new Character[]{'4', '@'});
-        L33T_TABLE.put('b', new Character[]{'8'});
-        L33T_TABLE.put('c', new Character[]{'(', '{', '[', '<'});
-        L33T_TABLE.put('e', new Character[]{'3'});
-        L33T_TABLE.put('g', new Character[]{'6', '9'});
-        L33T_TABLE.put('i', new Character[]{'1', '!', '|'});
-        L33T_TABLE.put('l', new Character[]{'1', '|', '7'});
-        L33T_TABLE.put('o', new Character[]{'0'});
-        L33T_TABLE.put('s', new Character[]{'$', '5'});
-        L33T_TABLE.put('t', new Character[]{'+', '7'});
-        L33T_TABLE.put('x', new Character[]{'%'});
-        L33T_TABLE.put('z', new Character[]{'2'});
+    private static Map<Character, Character[]> L33T_TABLE;
+
+    private static final Map<Character, Character[]> getL33tTable() {
+        synchronized (Zxcvbn.class) {
+            if (L33T_TABLE==null) {
+                L33T_TABLE = new HashMap<>();
+
+                L33T_TABLE.put('a', new Character[]{'4', '@'});
+                L33T_TABLE.put('b', new Character[]{'8'});
+                L33T_TABLE.put('c', new Character[]{'(', '{', '[', '<'});
+                L33T_TABLE.put('e', new Character[]{'3'});
+                L33T_TABLE.put('g', new Character[]{'6', '9'});
+                L33T_TABLE.put('i', new Character[]{'1', '!', '|'});
+                L33T_TABLE.put('l', new Character[]{'1', '|', '7'});
+                L33T_TABLE.put('o', new Character[]{'0'});
+                L33T_TABLE.put('s', new Character[]{'$', '5'});
+                L33T_TABLE.put('t', new Character[]{'+', '7'});
+                L33T_TABLE.put('x', new Character[]{'%'});
+                L33T_TABLE.put('z', new Character[]{'2'});
+            }
+            return L33T_TABLE;
+        }
+    }
+
+    public static void unload() {
+        synchronized (Zxcvbn.class) {
+            L33T_TABLE = null;
+        }
     }
 
     public HashMap<Character, Character[]> relevantL33tSubTable(String password) {
-        return relevantL33tSubTable(password, L33T_TABLE);
+        return relevantL33tSubTable(password, getL33tTable());
     }
 
     public HashMap<Character, Character[]> relevantL33tSubTable(String password, Map<Character, Character[]> table) {

@@ -3,6 +3,11 @@ package com.nulabinc.zxcvbn;
 import com.nulabinc.zxcvbn.matchers.Match;
 import com.nulabinc.zxcvbn.Matching;
 import com.nulabinc.zxcvbn.matchers.Dictionary;
+import com.nulabinc.zxcvbn.matchers.Keyboard;
+import com.nulabinc.zxcvbn.guesses.RegexGuess;
+import com.nulabinc.zxcvbn.matchers.RegexMatcher;
+import com.nulabinc.zxcvbn.matchers.DateMatcher;
+import com.nulabinc.zxcvbn.matchers.L33tMatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +16,13 @@ public class Zxcvbn {
 
     public static void unloadDictionaryData() {
         synchronized (Zxcvbn.class) {
-            Dictionary.unloadFrequencyLists();
-            Matching.unloadDictionaries();
+            Dictionary.unload();
+            Matching.unload();
+            Keyboard.unload();
+            RegexGuess.unload();
+            RegexMatcher.unload();
+            DateMatcher.unload();
+            L33tMatcher.unload();
         }
     }
 

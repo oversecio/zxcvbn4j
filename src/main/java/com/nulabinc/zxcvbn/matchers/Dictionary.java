@@ -40,7 +40,7 @@ public class Dictionary {
         }
     }
 
-    public static void unloadFrequencyLists() {
+    public static void unload() {
         synchronized (Zxcvbn.class) {
             FREQUENCY_LISTS = null;
         }
