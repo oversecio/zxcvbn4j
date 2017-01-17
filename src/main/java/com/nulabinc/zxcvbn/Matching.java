@@ -7,11 +7,11 @@ import java.util.*;
 
 public class Matching {
 
-    private static final Map<String, Map<String, Integer>> BASE_RANKED_DICTIONARIES;
+    private static Map<String, Map<String, Integer>> BASE_RANKED_DICTIONARIES;
 
-    private static synchronized void initDicitionaries {
+    private static synchronized void initDicitionaries() {
         if (BASE_RANKED_DICTIONARIES==null) {
-            BASE_RANKED_DICTIONARIES =  = new HashMap<>();
+            BASE_RANKED_DICTIONARIES =  new HashMap<>();
             for (Map.Entry<String, String[]> frequencyListRef : Dictionary.FREQUENCY_LISTS.entrySet()) {
                 String name = frequencyListRef.getKey();
                 String[] ls = frequencyListRef.getValue();
@@ -30,7 +30,7 @@ public class Matching {
         this(new ArrayList<String>());
     }
 
-    public (List<String> orderedList) {
+    public Matching(List<String> orderedList) {
         initDicitionaries();
 
         if (orderedList == null) orderedList = new ArrayList<>();
