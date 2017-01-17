@@ -1,11 +1,18 @@
 package com.nulabinc.zxcvbn;
 
 import com.nulabinc.zxcvbn.matchers.Match;
+import com.nulabinc.zxcvbn.Matching;
+import com.nulabinc.zxcvbn.matchers.Dictionary;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Zxcvbn {
+
+    public static synchronized void unloadDictionaryData() {
+        Dictionary.unloadFrequencyLists();
+        Matching.unloadDictionaries();
+    }
 
     public Zxcvbn() {
     }

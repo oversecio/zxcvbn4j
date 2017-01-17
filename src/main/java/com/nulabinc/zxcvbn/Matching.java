@@ -9,15 +9,16 @@ public class Matching {
 
     private static Map<String, Map<String, Integer>> BASE_RANKED_DICTIONARIES;
 
-    private static synchronized void initDicitionaries() {
+    private static synchronized  Map<String, Map<String, Integer>> getBaseRankedDictionaries() {
         if (BASE_RANKED_DICTIONARIES==null) {
             BASE_RANKED_DICTIONARIES =  new HashMap<>();
-            for (Map.Entry<String, String[]> frequencyListRef : Dictionary.FREQUENCY_LISTS.entrySet()) {
+            for (Map.Entry<String, String[]> frequencyListRef : Dictionary.getFrequencyLists().entrySet()) {
                 String name = frequencyListRef.getKey();
                 String[] ls = frequencyListRef.getValue();
                 BASE_RANKED_DICTIONARIES.put(name, buildRankedDict(ls));
             }
         }
+        return BASE_RANKED_DICTIONARIES;
     }
 
     public static synchronized void unloadDictionaries() {
@@ -31,11 +32,9 @@ public class Matching {
     }
 
     public Matching(List<String> orderedList) {
-        initDicitionaries();
-
         if (orderedList == null) orderedList = new ArrayList<>();
         this.rankedDictionaries = new HashMap<>();
-        for (Map.Entry<String, Map<String, Integer>> baseRankedDictionary : BASE_RANKED_DICTIONARIES.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> baseRankedDictionary : getBaseRankedDictionaries().entrySet()) {
             this.rankedDictionaries.put(
                     baseRankedDictionary.getKey(),
                     baseRankedDictionary.getValue());

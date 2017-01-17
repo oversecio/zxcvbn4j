@@ -31,9 +31,17 @@ public class Dictionary {
             "female_names"
     };
 
-    public static final Map<String, String[]> FREQUENCY_LISTS;
-    static {
-        FREQUENCY_LISTS = read();
+    private static Map<String, String[]> FREQUENCY_LISTS;
+
+    public static synchronized Map<String, String[]> getFrequencyLists() {
+        if (FREQUENCY_LISTS==null) {
+            FREQUENCY_LISTS = read();
+        }
+        return FREQUENCY_LISTS;
+    }
+
+    public static synchronized void unloadFrequencyLists() {
+        FREQUENCY_LISTS = null;
     }
 
     private static Map<String, String[]> read() {
