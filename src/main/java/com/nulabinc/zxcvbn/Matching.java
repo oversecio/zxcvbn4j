@@ -7,13 +7,21 @@ import java.util.*;
 
 public class Matching {
 
-    private static final Map<String, Map<String, Integer>> BASE_RANKED_DICTIONARIES = new HashMap<>();
-    static {
-        for (Map.Entry<String, String[]> frequencyListRef : Dictionary.FREQUENCY_LISTS.entrySet()) {
-            String name = frequencyListRef.getKey();
-            String[] ls = frequencyListRef.getValue();
-            BASE_RANKED_DICTIONARIES.put(name, buildRankedDict(ls));
+    private static final Map<String, Map<String, Integer>> BASE_RANKED_DICTIONARIES;
+
+    private static synchronized void initDicitionaries {
+        if (BASE_RANKED_DICTIONARIES==null) {
+            BASE_RANKED_DICTIONARIES =  = new HashMap<>();
+            for (Map.Entry<String, String[]> frequencyListRef : Dictionary.FREQUENCY_LISTS.entrySet()) {
+                String name = frequencyListRef.getKey();
+                String[] ls = frequencyListRef.getValue();
+                BASE_RANKED_DICTIONARIES.put(name, buildRankedDict(ls));
+            }
         }
+    }
+
+    public static synchronized void unloadDictionaries() {
+        BASE_RANKED_DICTIONARIES = null;
     }
 
     private final Map<String, Map<String, Integer>> rankedDictionaries;
@@ -22,7 +30,9 @@ public class Matching {
         this(new ArrayList<String>());
     }
 
-    public Matching(List<String> orderedList) {
+    public (List<String> orderedList) {
+        initDicitionaries();
+
         if (orderedList == null) orderedList = new ArrayList<>();
         this.rankedDictionaries = new HashMap<>();
         for (Map.Entry<String, Map<String, Integer>> baseRankedDictionary : BASE_RANKED_DICTIONARIES.entrySet()) {
